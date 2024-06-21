@@ -16,6 +16,7 @@ class GeneratedRoutes {
 
 
 
+
   static Route<dynamic> generatedRoutes(RouteSettings routesettings) {
     switch (routesettings.name) {
       case home:

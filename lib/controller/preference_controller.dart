@@ -10,9 +10,7 @@ import '../utilities/constants.dart';
 
 class PreferenceController {
   static late SharedPreferences sharedPreferences;
-  String jobseeker = "jobseeker";
   String userId = 'userId';
-  bool jobSeekerBool = false;
   List<Items> item=[];
 
   static Future<void> init() async => sharedPreferences = await SharedPreferences.getInstance();
@@ -58,6 +56,6 @@ class PreferenceController {
   delete() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     await preferences.remove(Constants.userLoggedIn);
-    await preferences.remove(jobseeker);
+
   }
 }

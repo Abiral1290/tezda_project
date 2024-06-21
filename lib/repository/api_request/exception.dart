@@ -4,17 +4,7 @@ class AuthRequestFailure implements Exception {
   }
 }
 
-class JobseekerNotFound implements Exception {
-  JobseekerNotFound() {
-    throw 'Given user does not exist';
-  }
-}
 
-class JobseekerCredentialsNotMatch implements Exception {
-  JobseekerCredentialsNotMatch() {
-    throw 'Check your credentials and try again.';
-  }
-}
 
 class NetworkConnectionError implements Exception {
   NetworkConnectionError() {

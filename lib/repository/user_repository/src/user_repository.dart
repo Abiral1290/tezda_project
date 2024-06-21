@@ -39,8 +39,7 @@ class UserRepository{
         PreferenceController.sharedPreferences.setBool(Constants.userLoggedIn, true);
       });
       return response;
-      //Constants.Api_Toker_1 = token;
-    }
+     }
   return response;
   }
 

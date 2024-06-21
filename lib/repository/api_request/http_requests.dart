@@ -12,10 +12,7 @@ import 'exception.dart';
 
 
 class HttpRequests {
-  // static const String urlbase = "192.168.99.21";
- // static const String localbase = "192.168.99.21";
-  // static const String localbase = "api.staging.rojgari.com";
-  // static const String urlbase = "api.staging.rojgari.com";
+
 
   static const String urlbase = "api.escuelajs.co";
   static const bool localServer = false;
@@ -23,16 +20,13 @@ class HttpRequests {
   static final Connectivity _connectivity = Connectivity();
 
   static Future<Map<String, String>> createHeaders([requiresHeader = true, isContent = true]) async {
-   // String? token = PreferenceController.sharedPreferences.getString(Constants.jobseekerToken);
     Map<String, String> headers = <String, String>{};
     if (isContent) {
       headers['Content-Type'] = 'application/x-www-form-urlencoded';
       headers['Content-Type'] = 'application/json; charset=UTF-8';
       headers['Accept'] = 'application/json';
     }
-    // if (token != null && requiresHeader) {
-    //   headers['Authorization'] = 'Bearer  $token';
-    // }
+
     return headers;
   }
 
@@ -73,13 +67,10 @@ class HttpRequests {
     if (connection != ConnectivityResult.none) {
       try {
         final Uri url;
-      //  if (localServer) {
-        log("urlbase $urlbase");
+         log("urlbase $urlbase");
           url = Uri.http(urlbase, api);
           log("url $url");
-        // } else {
-        //   url = Uri.https(urlbase, api);
-        // }
+
 
         var headers = await createHeaders(requiresHeader);
         log('------------------ API Request Start ----------------------');
@@ -157,78 +148,3 @@ class HttpRequests {
   }
 }
 
-const String urlbase = "192.168.99.21";
-
-Future<Map<String, String>> createHeaders([requiresHeader = true, isContent = true]) async {
- String? token = PreferenceController.sharedPreferences.getString(Constants.userLoggedIn);
-  Map<String, String> headers = <String, String>{};
-  if (isContent) {
-    headers['Content-Type'] = 'application/json; charset=UTF-8';
-    headers['Accept'] = 'application/json';
-  }
-  if (token != null && requiresHeader) {
-    headers['Authorization'] = 'Bearer  $token';
-  }
-  return headers;
-}
-
-Future<http.Response> requestGet(String api, [Map<String, dynamic>? query, requiresHeader = true]) async {
-  try {
-    log(query.toString());
-    final url = Uri.http(urlbase, api, query);
-    final headers = await createHeaders(requiresHeader);
-    log(url.toString(), name: 'Get request send', zone: Zone.current);
-
-    final resp = await http.get(url, headers: headers).timeout(const Duration(seconds: 60), onTimeout: () {
-      throw TimeoutException('The connection has timed out, Please try again!');
-    });
-
-    debugPrint('------------------ API Response Start ----------------------');
-    log(resp.body, name: url.toString(), zone: Zone.current);
-    return responseErrorChecker(resp);
-  } on SocketException {
-    throw NetworkConnectionError();
-  } on HandleUncaughtErrorHandler {
-    log(name: 'uncaught error', 'Error', stackTrace: StackTrace.current);
-    throw 'Unhandled error occured';
-  }
-}
-
-Future<http.Response> requestPost(String api, dynamic body, [requiresHeader = true]) async {
-  try {
-    var url = Uri.http(urlbase, api);
-    var headers = await createHeaders(requiresHeader);
-    log('------------------ API Request Start ----------------------');
-    log("POST: $url");
-    log("Headers: $headers");
-    log("Parameters: $body");
-    log('------------------ API Request End ----------------------');
-    var resp = await http
-        .post(
-      url,
-      body: jsonEncode(body),
-      headers: headers,
-    )
-        .timeout(const Duration(seconds: 60), onTimeout: () {
-      throw TimeoutException('The connection has timed out, Please try again!');
-    });
-    log('------------------ API Response Start ----------------------');
-    log('$url');
-    log('Response: ${resp.body}');
-    log('------------------- API Response End ----------------------');
-    return responseErrorChecker(resp);
-  } on SocketException {
-    throw NetworkConnectionError();
-  } on HandleUncaughtErrorHandler {
-    throw 'Unhandled error occured';
-  }
-}
-
-http.Response responseErrorChecker(http.Response resp) {
-  if (resp.statusCode == 400) throw BadRequestError();
-  if (resp.statusCode == 403) throw ForbiddenError();
-  if (resp.statusCode == 404) throw NotFoundError();
-  if (resp.statusCode >= 500) throw InternalServerError();
-  if (resp.statusCode < 200) throw ResponseError();
-  return resp;
-}
